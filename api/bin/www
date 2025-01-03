@@ -4,6 +4,10 @@
  * Module dependencies.
  */
 
+const { config } = require('dotenv');
+const { CONNECTION_STRING } = require('../config/index.js');
+const Database = require('../db/Database.js');
+
 var app = require('../app');
 var debug = require('debug')('api:server');
 var http = require('http');
@@ -87,4 +91,6 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+
+  Database.connect({CONNECTION_STRING});
 }

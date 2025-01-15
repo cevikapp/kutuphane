@@ -2,12 +2,13 @@ const {DataTypes} = require('sequelize');
 const {Sequelize} = require('@sequelize/core');
 
 module.exports = (sequelize) => {
-    const UserRole = sequelize.define('UserRole', {
+    const Loan = sequelize.define('Loan', {
         id: {
             type: DataTypes.INTEGER,
-            defaultValue: DataTypes.INTEGER,
+            unique: true,
             primaryKey: true,
             allowNull: false,
+            autoIncrement: true,
         },
         book_id: {
             type: DataTypes.INTEGER,
@@ -36,12 +37,16 @@ module.exports = (sequelize) => {
         },
         return_date: {
             type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+            allowNull: false
+        },
+        status: {
+            type: DataTypes.ENUM('active', 'returned'),
+            defaultValue: 'active', // Default olarak aktif ödünç
         },
     }, {
-        tableName: 'user_roles',
+        tableName: 'loans',
         timestamps: true,
     });
     
-    return UserRole;
+    return Loan;
     }

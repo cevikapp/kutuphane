@@ -5,9 +5,10 @@ module.exports = (sequelize) => {
   const RolePrivilege = sequelize.define('RolePrivilege', {
     id: {
       type: DataTypes.INTEGER,
-      defaultValue: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      autoIncrement: true,
+      unique: true,
     },
     role_id: {
       type: DataTypes.INTEGER,

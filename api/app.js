@@ -21,6 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', require('./routes/index'));
+require('./jobs/overdueLoansChecker');
 
 // app.use('/users', require('./routes/users'));
 // app.use('/auditlogs', require('./routes/auditlogs'));
@@ -33,6 +34,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  console.error(err.stack);
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

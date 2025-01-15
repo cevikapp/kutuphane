@@ -1,12 +1,13 @@
-import { Sequelize } from '@sequelize/core';
-const { DataTypes } = require('sequelize');
+const {DataTypes} = require('sequelize');
+const {Sequelize} = require('@sequelize/core');
 
-module.exports = (sequelize) => {
+
+module.exports = (sequelize) => {  
+
   const User = sequelize.define('User', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      unique: true,
       autoIncrement: true,
       allowNull: false,
     },
@@ -21,6 +22,16 @@ module.exports = (sequelize) => {
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    role_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'roles', // Role tablosunun adı (veritabanındaki tablo adı)
+        key: 'id',      // Role tablosundaki primary key
+      },
+      onUpdate: 'CASCADE', // Role tablosundaki bir id güncellenirse, bu tablo da güncellensin
+      onDelete: 'SET NULL' // Role silinirse, bu sütun null olsun
     },
     is_active: {
       type: DataTypes.BOOLEAN,
@@ -45,8 +56,8 @@ module.exports = (sequelize) => {
     }
 
   }, {
-    tableName: 'users', 
-    timestamps: true,
+    tableName: 'users',
+    timestamps: true, 
   });
 
   return User;

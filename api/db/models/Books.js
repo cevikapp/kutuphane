@@ -1,53 +1,57 @@
 const {DataTypes} = require('sequelize');
 const {Sequelize} = require('@sequelize/core');
-const sequelize = require('sequelize');
 
 module.exports = (sequelize) => {
-    const Book = sequelize.define('Book', {
-        id: {
-            type: DataTypes.INTEGER,
-            defaultValue: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false
-        },
-        book_name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        author: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        isbn: {
-            type: DataTypes.STRING,
-        },
-        category: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            reference: {
-                model: 'categories',
-                key: 'id',
+    const Book = sequelize.define('Book',
+        {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+                allowNull: false,
+            },
+            book_name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            author: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            isbn: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            category: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {
+                    async isValidCategory(value) {
+                        const categoryExists = await sequelize.models.Category.findOne({
+                            where: {
+                                name: value,
+                            },
+                        });
+                        if(!categoryExists) {
+                            throw new Error('Category does not exist');
+                        }
+                    }
+                },
+            },
+            created_by: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'users',
+                    key: 'id'
+                }
             },
         },
-        created_by: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            reference: {
-                model: 'users',
-                key: 'id',
-            },
-        },
-        created_at: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
-        },
-        updated_at: {
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW,
+        {
+            tableName: 'books',
+            timestamps: true,
         }
-    }, {
-        tableName: 'books',
-        timestamps: true,
+    );
 
-    });
-}
+    return Book;
+};

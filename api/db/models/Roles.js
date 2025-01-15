@@ -1,9 +1,9 @@
-import { Sequelize } from '@sequelize/core';
-const { DataTypes } = require('sequelize');
+const {DataTypes} = require('sequelize');
+const {Sequelize} = require('@sequelize/core');
 
 
 module.exports = (sequelize) => {
-  const User = sequelize.define('User', {
+  const Role = sequelize.define('Role', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -24,15 +24,6 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING
     },
     
-    created_by: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
-    },
-    
     created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
@@ -43,10 +34,9 @@ module.exports = (sequelize) => {
     }
   }, 
   {
-    tableName: 'users', 
+    tableName: 'roles', 
     timestamps: true,
-  }
-);
+  });
 
-  return User;
+  return Role;
 };

@@ -56,8 +56,10 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("Received email:", email, "password:", password); 
 
     const user = await User.findOne({ where: { email } });
+    
     if (!user) {
       return res.status(401).json({ error: 'Geçersiz e-posta veya şifre.' });
       
@@ -69,16 +71,29 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Geçersiz e-posta veya şifre.' });
     }
 
-    const token = jwt.sign({ id: user.id, role_id: user.role_id }, JWT_SECRET, {
+    const token = jwt.sign({ id: user.id, role_id: user.role_id}, JWT_SECRET, {
       expiresIn: JWT_EXPIRES_IN,
     });
-
-    res.status(200).json({ message: 'Giriş başarılı.', token });
+    res.status(200).json({ message: 'Giriş başarılı.', token, role_id: user.role_id });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Giriş işlemi sırasında bir hata oluştu.' });
   }
 });
+
+
+router.get('/me', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+    }
+    res.json(Response.successResponse(user)); 
+  } catch (err) {
+    res.status(500).json({ error: 'Bir hata oluştu' });
+  }
+});
+
 
 router.post('/add', authenticateToken, async (req, res) => {
   try {
